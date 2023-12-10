@@ -87,63 +87,53 @@
         }
     
         function sendMessage() {
-            const messageInput = document.getElementById('messageInput');
-            const messageContent = messageInput.value;
-    
-            if (messageContent.trim() !== '') {
-                fetch('https://161.97.159.175:2183/sendMessage', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({}),
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.lockdown) {
-                        showNotification('The website is currently in lockdown. Your message was not sent.', true);
-                    } else {
-                        const embed = {
-                            title: 'New Message',
-                            color: '#0099ff',
-                            description: messageContent,
-                            timestamp: new Date(),
-                            footer: {
-                                text: 'Message from the website',
-                            },
-                        };
-    
-                        fetch('https://161.97.159.175:2183/sendMessage', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({ embed: embed }),
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                console.log('Message sent successfully:', data);
-                                showNotification('Message sent successfully!');
-                            } else {
-                                console.error('Error sending message to the bot:', data.error);
-                                showNotification('Failed to send message to the bot. Please try again.', true);
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error sending message to the bot:', error);
-                            showNotification('Failed to send message to the bot. Please try again.', true);
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error('Error checking lockdown status:', error);
-                    showNotification('Failed to check lockdown status. Please try again.', true);
-                });
-            } else {
-                showNotification('Please enter a message before sending.', true);
+    const usernameInput = document.getElementById('usernameInput');
+    const messageInput = document.getElementById('messageInput');
+    const username = usernameInput.value;
+    const messageContent = messageInput.value;
+
+    // Check if both username and message are not empty
+    if (username.trim() !== '' && messageContent.trim() !== '') {
+        // Define the embed structure with username
+        const embed = {
+            title: 'New Message',
+            color: '#0099ff',
+            description: messageContent,
+            author: {
+                name: username,
+            },
+            timestamp: new Date(),
+            footer: {
+                text: 'Message from the website',
+            },
+        };
+
+        // Send the message to the Discord bot using a fetch request
+        fetch('http://localhost:2183/sendMessage', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ embed: embed }),
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to send message to the bot.');
             }
-        }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Message sent successfully:', data);
+            showNotification('Message sent successfully!');
+        })
+        .catch(error => {
+            console.error('Error sending message to the bot:', error);
+            showNotification('Failed to send message to the bot.', true);
+        });
+    } else {
+        showNotification('Please enter both a username and a message before sending.', true);
+    }
+}
     </script>
     
 </body>
