@@ -41,6 +41,7 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
         }
 
         button:hover {
@@ -69,7 +70,7 @@
         <label for="messageInput">Enter your message:</label>
         <input type="text" id="messageInput" placeholder="Type your message here">
         <button onclick="sendMessage()">Send Message</button>
-    </div>
+    </div>    
 
     <!-- Notification box -->
     <div id="notification"></div>
