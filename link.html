@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discord Bot Interface</title>
+    <style>
+        body {
+            background-color: #4b0082; /* Dark Purple */
+            color: #ffffff; /* White text */
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        #container {
+            background-color: #808080; /* Gray */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4b0082; /* Dark Purple */
+            color: #ffffff; /* White text */
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #800080; /* Purple */
+        }
+
+        /* Style for the notification box */
+        #notification {
+            position: fixed;
+            top: 0;
+            right: 0;
+            padding: 10px;
+            background-color: #ff4444;
+            color: #fff;
+            transition: transform 0.5s ease-in-out;
+            transform: translateX(100%);
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <label for="usernameInput">Enter your username:</label>
+        <input type="text" id="usernameInput" placeholder="Type your username here">
+        <label for="messageInput">Enter your message:</label>
+        <input type="text" id="messageInput" placeholder="Type your message here">
+        <button onclick="sendMessage()">Send Message</button>
+    </div>
+
+    <!-- Notification box -->
+    <div id="notification"></div>
+
+    <script>
+        function showNotification(message, isError = false) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.style.backgroundColor = isError ? '#ff4444' : '#44ff44';
+            notification.style.transform = 'translateX(0)';
+            setTimeout(() => {
+                notification.style.transform = 'translateX(100%)';
+            }, 3000);
+        }
+    
+        function sendMessage() {
+            const messageInput = document.getElementById('messageInput');
+            const messageContent = messageInput.value;
+    
+            if (messageContent.trim() !== '') {
+                fetch('http://localhost:2183/sendMessage', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({}),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.lockdown) {
+                        showNotification('The website is currently in lockdown. Your message was not sent.', true);
+                    } else {
+                        const embed = {
+                            title: 'New Message',
+                            color: '#0099ff',
+                            description: messageContent,
+                            timestamp: new Date(),
+                            footer: {
+                                text: 'Message from the website',
+                            },
+                        };
+    
+                        fetch('http://161.97.159.175:2183/sendMessage', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ embed: embed }),
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                console.log('Message sent successfully:', data);
+                                showNotification('Message sent successfully!');
+                            } else {
+                                console.error('Error sending message to the bot:', data.error);
+                                showNotification('Failed to send message to the bot. Please try again.', true);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error sending message to the bot:', error);
+                            showNotification('Failed to send message to the bot. Please try again.', true);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error checking lockdown status:', error);
+                    showNotification('Failed to check lockdown status. Please try again.', true);
+                });
+            } else {
+                showNotification('Please enter a message before sending.', true);
+            }
+        }
+    </script>
+    
+</body>
+</html>
