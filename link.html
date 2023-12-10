@@ -91,7 +91,7 @@
             const messageContent = messageInput.value;
     
             if (messageContent.trim() !== '') {
-                fetch('http://161.97.159.175:2183/sendMessage', {
+                fetch('https://161.97.159.175:2183/sendMessage', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -113,7 +113,7 @@
                             },
                         };
     
-                        fetch('http://161.97.159.175:2183/sendMessage', {
+                        fetch('https://161.97.159.175:2183/sendMessage', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
