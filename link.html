@@ -6,33 +6,34 @@
     <title>Discord Bot Interface</title>
     <style>
         body {
-            background-color: #4b0082; /* Dark Purple */
-            color: #ffffff; /* White text */
             font-family: 'Arial', sans-serif;
-            margin: 0;
             display: flex;
             align-items: center;
             justify-content: center;
             height: 100vh;
+            margin: 0;
+            background-color: #4b0082; /* Sark Purple */
         }
 
         #container {
-            background-color: #808080; /* Gray */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             padding: 20px;
+            background-color: #ffffffa4; /* White */
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         label {
-            display: block;
             margin-bottom: 10px;
         }
 
         input {
-            width: 100%;
             padding: 10px;
             margin-bottom: 20px;
             box-sizing: border-box;
+            width: 300px;
         }
 
         button {
@@ -42,6 +43,7 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
         }
 
         button:hover {
@@ -51,15 +53,24 @@
         /* Style for the notification box */
         #notification {
             position: fixed;
-            top: 0;
-            right: 0;
-            padding: 10px;
-            background-color: #ff4444;
+            bottom: 10px;
+            right: 10px;
+            padding: 15px;
+            background-color: #44ff44; /* Green */
             color: #fff;
-            transition: transform 0.5s ease-in-out;
-            transform: translateX(100%);
             border-radius: 5px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: none;
+            animation: slideIn 0.5s ease-out forwards;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+            }
+            to {
+                transform: translateX(0);
+            }
         }
     </style>
 </head>
@@ -71,6 +82,7 @@
         <input type="text" id="messageInput" placeholder="Type your message here">
         <button onclick="sendMessage()">Send Message</button>
     </div>
+    
 
     <!-- Notification box -->
     <div id="notification"></div>
@@ -80,71 +92,61 @@
             const notification = document.getElementById('notification');
             notification.textContent = message;
             notification.style.backgroundColor = isError ? '#ff4444' : '#44ff44';
-            notification.style.transform = 'translateX(0)';
+            notification.style.display = 'block';
+
             setTimeout(() => {
-                notification.style.transform = 'translateX(100%)';
+                notification.style.display = 'none';
             }, 3000);
         }
-    
+
         function sendMessage() {
-            const messageInput = document.getElementById('messageInput');
-            const messageContent = messageInput.value;
-    
-            if (messageContent.trim() !== '') {
-                fetch('https://161.97.159.175:2183/sendMessage', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({}),
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.lockdown) {
-                        showNotification('The website is currently in lockdown. Your message was not sent.', true);
-                    } else {
-                        const embed = {
-                            title: 'New Message',
-                            color: '#0099ff',
-                            description: messageContent,
-                            timestamp: new Date(),
-                            footer: {
-                                text: 'Message from the website',
-                            },
-                        };
-    
-                        fetch('https://161.97.159.175:2183/sendMessage', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({ embed: embed }),
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                console.log('Message sent successfully:', data);
-                                showNotification('Message sent successfully!');
-                            } else {
-                                console.error('Error sending message to the bot:', data.error);
-                                showNotification('Failed to send message to the bot. Please try again.', true);
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error sending message to the bot:', error);
-                            showNotification('Failed to send message to the bot. Please try again.', true);
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error('Error checking lockdown status:', error);
-                    showNotification('Failed to check lockdown status. Please try again.', true);
-                });
-            } else {
-                showNotification('Please enter a message before sending.', true);
+    const usernameInput = document.getElementById('usernameInput');
+    const messageInput = document.getElementById('messageInput');
+    const username = usernameInput.value;
+    const messageContent = messageInput.value;
+
+    // Check if both username and message are not empty
+    if (username.trim() !== '' && messageContent.trim() !== '') {
+        // Define the embed structure with username
+        const embed = {
+            title: 'New Message',
+            color: '#0099ff',
+            description: messageContent,
+            author: {
+                name: username,
+            },
+            timestamp: new Date(),
+            footer: {
+                text: 'Message from the website',
+            },
+        };
+
+        // Send the message to the Discord bot using a fetch request
+        fetch('http://localhost:2183/sendMessage', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ embed: embed }),
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to send message to the bot.');
             }
-        }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Message sent successfully:', data);
+            showNotification('Message sent successfully!');
+        })
+        .catch(error => {
+            console.error('Error sending message to the bot:', error);
+            showNotification('Failed to send message to the bot.', true);
+        });
+    } else {
+        showNotification('Please enter both a username and a message before sending.', true);
+    }
+}
     </script>
-    
 </body>
 </html>
