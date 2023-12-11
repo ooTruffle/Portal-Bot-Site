@@ -22,7 +22,7 @@ function showNotification(message, isError = false) {
 function redirectToDiscord() {
     // Replace YOUR_CLIENT_ID and YOUR_REDIRECT_URI with your actual values
     const clientId = '1183641743770517524';
-    const redirectUri = 'https://portal-bot.ftp.sh/linkbeta';
+    const redirectUri = 'http://portal-bot.ftp.sh/linkbeta';
 
     // Build the Discord OAuth URL
     const discordOAuthUrl = `https://discord.com/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=token&scope=identify`;
@@ -63,7 +63,7 @@ function sendMessage() {
         };
 
         // Send the message to the Discord bot using a fetch request
-        fetch('https://161.97.159.175:2183/sendMessage', {
+        fetch('http://161.97.159.175:2183/sendMessage', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
