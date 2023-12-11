@@ -61,15 +61,17 @@ function sendMessage() {
                 text: 'Message from the website', iconURL: 'https://portal-bot.ftp.sh/images/pb.png'
             },
         };
+        console.log('Embed:', embed);
 
         // Send the message to the Discord bot using a fetch request
         fetch('http://161.97.159.175:2183/sendMessage', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ embed: embed }),
-        })
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/json',
+        },
+    body: JSON.stringify({ embed: embed }),
+})
+
         .then(response => {
             if (!response.ok) {
                 throw new Error('Failed to send message to the bot.');
