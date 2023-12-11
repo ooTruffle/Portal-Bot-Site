@@ -50,11 +50,11 @@ button:hover {
     position: fixed;
     top: 0;
     right: 0;
-    padding: 5%;
+    padding: 2%;
     background-color: #ff4444;
     color: #fff;
     transition: transform 0.5s ease-in-out;
     transform: translateX(100%);
-    border-radius: 5px;
+    border-radius: 3px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
