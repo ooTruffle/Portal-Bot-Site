@@ -1,0 +1,60 @@
+body {
+    background-color: #4b0082;
+    color: #ffffff;
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+#container {
+    background-color: #808080;
+    padding: 5%; /* Use percentage for padding */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 400px; /* Limit the maximum width */
+    width: 100%; /* Take up the full width of the container */
+    box-sizing: border-box; /* Include padding and border in the total width */
+}
+
+label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+input {
+    width: 100%; /* Take up the full width of the container */
+    padding: 10px;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+}
+
+button {
+    width: 100%; /* Take up the full width of the container */
+    background-color: #4b0082;
+    color: #ffffff;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+button:hover {
+    background-color: #800080;
+}
+
+#notification {
+    position: fixed;
+    top: 0;
+    right: 0;
+    padding: 5%;
+    background-color: #ff4444;
+    color: #fff;
+    transition: transform 0.5s ease-in-out;
+    transform: translateX(100%);
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}

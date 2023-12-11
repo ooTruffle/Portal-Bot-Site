@@ -3,138 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Discord Bot Interface</title>
-    <style>
-        body {
-            background-color: #4b0082; /* Dark Purple */
-            color: #ffffff; /* White text */
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-        }
-
-        #container {
-            background-color: #808080; /* Gray */
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        label {
-            display: block;
-            margin-bottom: 10px;
-        }
-
-        input {
-            padding: 10px;
-            margin-bottom: 20px;
-            box-sizing: border-box;
-        }
-
-        button {
-            background-color: #4b0082; /* Dark Purple */
-            color: #ffffff; /* White text */
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease-in-out;
-        }
-
-        button:hover {
-            background-color: #800080; /* Purple */
-        }
-
-        /* Style for the notification box */
-        #notification {
-            position: fixed;
-            top: 0;
-            right: 0;
-            padding: 10px;
-            background-color: #ff4444;
-            color: #fff;
-            transition: transform 0.5s ease-in-out;
-            transform: translateX(100%);
-            border-radius: 5px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-    </style>
+    <title>Portal Bot Interface</title>
+    <meta content="Portal Bot - link" property="og:title" />
+		<meta content="Website that allows you to send messages on the bot" property="og:description" />
+		<meta content="https://portal-bot.ftp.sh/link" property="og:url" />
+		<meta content="https://portal-bot.ftp.sh/images/pb.png" property="og:image" />
+		<meta content="#8f00ff" data-react-helmet="true" name="theme-color" />
+		<link rel="icon" href="images/pb.png" type="image/x-icon" />
+    <link rel="stylesheet" href="link/styles.css">
 </head>
 <body>
     <div id="container">
-        <label for="usernameInput">Enter your username:</label>
-        <input type="text" id="usernameInput" placeholder="Type your username here">
-        <label for="messageInput">Enter your message:</label>
-        <input type="text" id="messageInput" placeholder="Type your message here">
+        <div>
+            <label for="usernameInput">Enter your username:</label>
+            <input type="text" id="usernameInput" placeholder="Type your username here">
+        </div>
+        <div>
+            <label for="messageInput">Enter your message:</label>
+            <input type="text" id="messageInput" placeholder="Type your message here">
+        </div>
         <button onclick="sendMessage()">Send Message</button>
-    </div>    
-
-    <!-- Notification box -->
+    </div>
     <div id="notification"></div>
-
-    <script>
-        function showNotification(message, isError = false) {
-            const notification = document.getElementById('notification');
-            notification.textContent = message;
-            notification.style.backgroundColor = isError ? '#ff4444' : '#44ff44';
-            notification.style.transform = 'translateX(0)';
-            setTimeout(() => {
-                notification.style.transform = 'translateX(100%)';
-            }, 3000);
-        }
-    
-        function sendMessage() {
-    const usernameInput = document.getElementById('usernameInput');
-    const messageInput = document.getElementById('messageInput');
-    const username = usernameInput.value;
-    const messageContent = messageInput.value;
-
-    // Check if both username and message are not empty
-    if (username.trim() !== '' && messageContent.trim() !== '') {
-        // Define the embed structure with username
-        const embed = {
-            title: 'New Message',
-            color: '#0099ff',
-            description: messageContent,
-            author: {
-                name: username,
-            },
-            timestamp: new Date(),
-            footer: {
-                text: 'Message from the website',
-            },
-        };
-
-        // Send the message to the Discord bot using a fetch request
-        fetch('http://161.97.159.175:2183/sendMessage', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ embed: embed }),
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to send message to the bot.');
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log('Message sent successfully:', data);
-            showNotification('Message sent successfully!');
-        })
-        .catch(error => {
-            console.error('Error sending message to the bot:', error);
-            showNotification('Failed to send message to the bot.', true);
-        });
-    } else {
-        showNotification('Please enter both a username and a message before sending.', true);
-    }
-}
-    </script>
-    
+    <script src="link/script.js"></script>
 </body>
 </html>
