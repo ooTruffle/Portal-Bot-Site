@@ -41,55 +41,73 @@ function sendMessage() {
         return;
     }
 
-    // Your existing sendMessage function logic here
-    const usernameInput = document.getElementById('usernameInput');
-    const messageInput = document.getElementById('messageInput');
-    const username = usernameInput.value;
-    const messageContent = messageInput.value;
+    // Fetch user information from Discord API
+    fetch('https://discord.com/api/users/@me', {
+        headers: {
+            'Authorization': `Bearer ${accessToken}`,
+        },
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to fetch user information from Discord API.');
+        }
+        return response.json();
+    })
+    .then(user => {
+        // Your existing sendMessage function logic here
+        const messageInput = document.getElementById('messageInput');
+        const messageContent = messageInput.value;
 
-    // Check if both username and message are not empty
-    if (username.trim() !== '' && messageContent.trim() !== '') {
-        // Define the embed structure with username
-        const embed = {
-            title: 'New Message',
-            color: '#0099ff',
-            description: messageContent,
-            author: {
-                name: username,
-            },
-            timestamp: new Date(),
-            footer: {
-                text: 'Message from the website', iconURL: 'https://portal-bot.ftp.sh/images/pb.png'
-            },
-        };
+        // Check if the message is not empty
+        if (messageContent.trim() !== '') {
+            // Define the embed structure with Discord username and profile picture
+            const embed = {
+                title: 'New Message',
+                color: '#0099ff',
+                description: messageContent,
+                author: {
+                    name: user.username,
+                    icon_url: `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`,
+                },
+                timestamp: new Date(),
+                footer: {
+                    text: 'Message from the website', iconURL: 'https://portal-bot.ftp.sh/images/pb.png'
+                },
+            };
 
-        // Send the message to the Discord bot using a fetch request
-        fetch('http://161.97.159.175:2183/sendMessage', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${accessToken}`, // Include the access token in the headers
-            },
-            body: JSON.stringify({ embed: embed }),
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to send message to the bot.');
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log('Message sent successfully:', data);
-            showNotification('Message sent successfully!');
-        })
-        .catch(error => {
-            console.error('Error sending message to the bot:', error);
-            showNotification('Failed to send message to the bot.', true);
-        });
-    } else {
-        showNotification('Please enter both a username and a message before sending.', true);
-    }
+            // Send the message to the Discord bot using a fetch request
+            fetch('http://161.97.159.175:2183/sendMessage', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${accessToken}`,
+                },
+                body: JSON.stringify({ embed: embed }),
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to send message to the bot.');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Message sent successfully:', data);
+                showNotification('Message sent successfully!');
+            })
+            .catch(error => {
+                console.error('Error sending message to the bot:', error);
+                showNotification('Failed to send message to the bot.', true);
+            });
+        } else {
+            showNotification('Please enter a message before sending.', true);
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching user information:', error);
+        showNotification('Failed to fetch user information.', true);
+    });
 }
+
 
 // Add an event listener for the "Send Message" button
 document.getElementById('sendMessageBtn').addEventListener('click', () => {
