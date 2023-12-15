@@ -64,7 +64,7 @@ function sendMessage() {
         console.log('Embed:', embed);
 
         // Send the message to the Discord bot using a fetch request
-        fetch('http://161.97.159.175:2183/sendMessage', {
+        fetch('http://161.97.159.175:3539/sendMessage', {
         method: 'POST',
         headers: {
         'Content-Type': 'application/json',
@@ -83,7 +83,7 @@ function sendMessage() {
             showNotification('Message sent successfully!');
         })
         .catch(error => {
-            console.error('Error sending message to the bot:', error);
+            console.error('Error sending message to the bot: Why the fuck are you looking in here',);
             showNotification('Failed to send message to the bot.', true);
         });
     } else {
