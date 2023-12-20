@@ -83,7 +83,7 @@ function sendMessage() {
             showNotification('Message sent successfully!');
         })
         .catch(error => {
-            console.error('Error sending message to the bot: Why the fuck are you looking in here', error);
+            console.error('Error sending message to the bot: Why the fuck are you looking in here');
             showNotification('Failed to send message to the bot.', true);
         });
     } else {
