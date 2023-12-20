@@ -64,7 +64,7 @@ function sendMessage() {
         console.log('Embed:', embed);
 
         // Send the message to the Discord bot using a fetch request
-        fetch('http://localhost:3539/sendMessage', {
+        fetch('http://161.97.159.175:3539/sendMessage', {
         method: 'POST',
         headers: {
         'Content-Type': 'application/json',
